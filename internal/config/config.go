@@ -2,8 +2,10 @@ package config
 
 import (
 	"flag"
-	"os"
 	"log"
+	"os"
+
+	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type HTTPServer struct{
@@ -17,7 +19,7 @@ type Config struct{
 }
 
 
-func MustLoad(){
+func MustLoad() *Config {
 	var configPath string
 
 	configPath = os.Getenv("CONFIG_PATH")
@@ -35,4 +37,13 @@ func MustLoad(){
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		log.Fatalf("config file not found: %s", configPath)
 	}
+
+	var cfg Config 
+
+	err := cleanenv.ReadConfig(configPath, &cfg)
+	if err != nil {
+		log.Fatalf("config file read error: %v", err)
+	}
+
+	return &cfg
 }

@@ -1,4 +1,4 @@
-module github.com/tushar0305/student-api
+module github.com/tushar0305/students-api
 
 go 1.23.4
 
