@@ -9,7 +9,6 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-
 	"github.com/tushar0305/students-api/internal/config"
 	"github.com/tushar0305/students-api/internal/http/handlers/student"
 	"github.com/tushar0305/students-api/internal/storage/sqlite"
@@ -46,6 +45,8 @@ func main() {
 	router.HandleFunc("GET /api/students/{id}",  student.GetById(storage))
 
 	router.HandleFunc("GET /api/students/",  student.GetList(storage))
+
+	router.HandleFunc("PUT /api/students/{id}",  student.Update(storage))
 
 	// http server setup
 	server := http.Server{
