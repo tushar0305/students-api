@@ -48,6 +48,8 @@ func main() {
 
 	router.HandleFunc("PUT /api/students/{id}",  student.Update(storage))
 
+	router.HandleFunc("DELETE /api/students/{id}",  student.Delete(storage))
+
 	// http server setup
 	server := http.Server{
 		Addr:    cfg.HTTPServer.Address,

@@ -170,3 +170,35 @@ func Update(storage storage.Storage) http.HandlerFunc {
 		response.WriteJSON(w, map[string]string{"status": StatusOk}, http.StatusOK)
 	}
 }
+
+// Delete a student by ID
+func Delete(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+		slog.Info("deleting a student", slog.String("id", id))
+
+		IntId, err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			response.WriteJSON(w, response.GeneralError(fmt.Errorf("invalid id")), http.StatusBadRequest)
+			return
+		}
+
+		// Retrieve the existing student
+		_, err = storage.GetStudentById(IntId)
+		if err != nil {
+			slog.Error("Student not found", slog.String("id", id))
+			response.WriteJSON(w, response.GeneralError(err), http.StatusNotFound)
+			return
+		}
+
+		// Delete the student
+		if err := storage.DeleteStudent(IntId); err != nil {
+			slog.Error("Failed to delete student", slog.String("id", id), slog.String("error", err.Error()))
+			response.WriteJSON(w, response.GeneralError(err), http.StatusInternalServerError)
+			return
+		}
+
+		slog.Info("Student deleted", slog.String("id", id))
+		response.WriteJSON(w, map[string]string{"status": StatusOk}, http.StatusOK)
+	}
+}
